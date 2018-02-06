@@ -1,39 +1,44 @@
 var clear = document.getElementById("clear");
-var toggle = document.getElementById("toggle");
 var canvas = document.getElementById("slate");
 var ctx = canvas.getContext("2d");
-var shape = 1;
 ctx.fillStyle = "lightsteelblue";
+var start = false;
+var startX = 0;
+var startY = 0;
 
 var clearCanvas = function(e){
     ctx.clearRect(0,0,500,500);
+    start = false;
 };
 
 var draw = function(e){
-    var x = e.clientX;
-    var y = e.clientY;
+    var x = e.offsetX;
+    var y = e.offsetY;
     console.log(x);
     console.log(y);
-    if (shape == 1){
-	ctx.fillRect(x,y,20,20);
-    };
-    if (shape == 2){
+    if (start == false){
 	ctx.beginPath();
-	ctx.arc(x,y,10,0,2*Math.PI);
-	ctx.fill();
-    };
-};
-
-var changeShape = function(e){
-    if (shape == 1){
-	ctx.fillStyle = "goldenrod";
-	shape = 2;
+	circle(x,y);
+	ctx.stroke()
+	startX = x;
+	startY = y;
+	start = true;
     }
     else {
-	ctx.fillStyle = "lightsteelblue";
-	shape = 1;
+	circle(x,y)
+	ctx.moveTo(startX, startY)
+	ctx.lineTo(x,y);
+	startX = x;
+	startY = y;
+	ctx.stroke();
     }
-    console.log(shape);
+}
+
+var circle = function(x,y){
+    ctx.beginPath();
+    ctx.arc(x,y,10,0,2*Math.PI);
+    ctx.stroke();
+    ctx.fill();
 }
 
 var print = function(e){
@@ -42,4 +47,3 @@ var print = function(e){
 
 clear.addEventListener("click", clearCanvas);
 canvas.addEventListener("click", draw);
-toggle.addEventListener("click", changeShape);
